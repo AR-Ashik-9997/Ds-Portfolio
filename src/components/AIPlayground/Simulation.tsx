@@ -18,7 +18,7 @@ const AIPlayground = () => {
     inputs: [
       {
         age: 30,
-        "capital-gain": 0,
+        "capital-gain": 1,
         "capital-loss": 0,
         education: "Bachelors",
         "education-num": 13,
