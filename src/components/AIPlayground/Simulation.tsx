@@ -1,31 +1,8 @@
-'use client';
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/jsx-no-comment-textnodes */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
 import { useState } from 'react';
-
-type ModelType = 'brain_tumor' | 'income_salary' | 'house_price';
-
-interface PredictionDetails {
-  label: string;
-  confidence: number;
-  probabilities?: Record<string, number>;
-}
-
-interface InferenceResponse {
-  status: string;
-  model_id: string;
-  timestamp: string;
-  latency_ms: number;
-  input_tensor_shape?: string;
-  predictions?: PredictionDetails;
-  model_metadata?: {
-    framework: string;
-    device: string;
-  };
-  error?: string;
-  message?: string;
-}
+import { InferenceResponse, ModelType } from '@/Shared/types/global_interface';
 
 const AIPlayground = () => {
   const [selectedModel, setSelectedModel] = useState<ModelType>('brain_tumor');
@@ -97,7 +74,7 @@ const AIPlayground = () => {
     const startTime = performance.now();
 
     // FastAPI Backend Endpoint
-    const baseUrl = process.env.NEXT_PUBLIC_FASTAPI_URL || 'http://127.0.0.1:8000';
+    const baseUrl = process.env.NEXT_PUBLIC_FASTAPI_URL || '';
     const endpointMap: Record<ModelType, string>
       = {
       brain_tumor: `${baseUrl}/predict/brain-tumor`,

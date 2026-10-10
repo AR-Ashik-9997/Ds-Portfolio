@@ -5,30 +5,46 @@ import { ExperienceItem } from "@/Shared/types/global_interface";
 
 const EXPERIENCE_DATA: ExperienceItem[] = [
     {
-        period: '2022 - Present',
-        role: 'Lead Machine Learning & Full-Stack Engineer',
-        company: 'Core AI Tech Solutions',
-        dotBgColor: 'bg-brand-500',
-        companyTextColor: 'text-brand-400',
-        hoverBorderColor: 'group-hover:border-brand-500/30',
+        period: 'Apr 2026 - Present',
+        role: 'Surveillance Engineer',
+        company: 'Khadiza Enterprise',
+        dotBgColor: 'bg-emerald-500',
+        companyTextColor: 'text-emerald-400',
+        hoverBorderColor: 'group-hover:border-emerald-500/30',
         responsibilities: [
-            'Architected and deployed PyTorch deep learning models for client inference APIs serving 2M+ monthly requests.',
-            'Engineered reactive frontend interfaces in Next.js 14 and Tailwind CSS integrated with async Python microservices.',
-            'Reduced server response latency by 35% using Redis Caching and optimized Docker container deployment.'
+            'Engineered and installed end-to-end CCTV and IP camera surveillance systems, ensuring optimal field-of-view, coverage, and site security.',
+            'Configured local network infrastructure, IP address assignment, router/switch setups, and secure remote viewing protocols for seamless live monitoring.',
+            'Performed routine diagnostic checks, hardware maintenance, firmware updates, and rapid troubleshooting to maintain uninterrupted system uptime.',
+            'Managed physical deployment including optical fiber/ethernet structured cabling, power supply provisioning, and camera unbinding or factory reset configurations.',
+            'Provided hands-on technical support for client system onboarding, mobile application integration, and storage/NVR setup.'
         ]
     },
     {
-        period: '2020 - 2022',
-        role: 'Software Engineer (Backend & ML)',
-        company: 'Neural Systems Lab',
-        dotBgColor: 'bg-indigo-500',
-        companyTextColor: 'text-indigo-400',
-        hoverBorderColor: 'group-hover:border-indigo-500/30',
+        period: 'Jan 2026 - Apr 2026',
+        role: 'Software Engineer',
+        company: 'Maya Enterprise',
+        dotBgColor: 'bg-cyan-500',
+        companyTextColor: 'text-cyan-400',
+        hoverBorderColor: 'group-hover:border-cyan-500/30',
         responsibilities: [
-            'Developed RESTful API endpoints using Python FastAPI and PostgreSQL with SQLAlchemy ORM.',
-            'Built automated data preprocessing pipelines for computer vision models using OpenCV and Scikit-learn.'
+            'Engineered a complete web application featuring a responsive frontend, custom backend RESTful APIs, and database architecture to power broadband package listings and customer workflows.',
+            'Built a secure admin dashboard enabling non-technical staff to manage bandwidth pricing tiers, push dynamic promotional offers, and handle client support inquiries in real time.',
+            'Developed a dynamic location verification tool for optical fiber availability checks alongside direct WhatsApp integration for 24/7 client support access.'
         ]
-    }
+    },
+    {
+        period: 'Apr 2023 - Jan 2024',
+        role: 'Full Stack Developer',
+        company: 'PlayerOrbit',
+        dotBgColor: 'bg-amber-500',
+        companyTextColor: 'text-amber-400',
+        hoverBorderColor: 'group-hover:border-amber-500/30',
+        responsibilities: [
+            'Developed responsive front-end interfaces using Sass and Tailwind CSS.',
+            'Integrated Google Meet and Zego Cloud for real-time video conferencing along with a secure PayPal payment gateway system.',
+            'Maintained clean codebase, resolved critical bugs, managed NPM packages, and optimized overall application performance.'
+        ]
+    },
 ];
 
 const Experience = () => {
