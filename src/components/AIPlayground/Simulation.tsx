@@ -1,8 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable react/jsx-no-comment-textnodes */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import { useState } from 'react';
-import { InferenceResponse, ModelType } from '@/Shared/types/global_interface';
+import { house_price_TabularInput, income_salary_TabularInput, InferenceResponse, ModelType } from '@/Shared/types/global_interface';
+import { runAIInferenceAPI } from '@/Shared/types/aiService';
+
 
 const AIPlayground = () => {
   const [selectedModel, setSelectedModel] = useState<ModelType>('brain_tumor');
@@ -12,53 +15,13 @@ const AIPlayground = () => {
     status: 'ready',
     message: 'Select model and click Run FastAPI.'
   });
-
-  // Original templates to prevent adding/deleting keys
-  const income_salary_TabularInput = {
-    inputs: [
-      {
-        age: 30,
-        "capital-gain": 0,
-        "capital-loss": 0,
-        education: "Bachelors",
-        "education-num": 13,
-        fnlwgt: 200000,
-        "hours-per-week": 40,
-        "marital-status": "Never-married",
-        "native-country": "United-States",
-        occupation: "Exec-managerial",
-        race: "White",
-        relationship: "Not-in-family",
-        sex: "Male",
-        workclass: "Private"
-      }
-    ]
-  };
-
-  const house_price_TabularInput = {
-    inputs: [
-      {
-        "Square_Footage": 2100,
-        "Num_Bedrooms": 3,
-        "Num_Bathrooms": 2.5,
-        "Stories": 2,
-        "Year_Built": 2015,
-        "Garage_Size": 2,
-        "Lot_Size": 6500,
-        "Property_Type": "Single-Family",
-        "Neighborhood_Quality": 8,
-        "Has_Pool": 1,
-        "Has_Fireplace": 1,
-        "Condition": "Excellent"
-      }
-    ]
-  };
+  const [selectedImage, setSelectedImage] = useState<string>("https://via.placeholder.com/224");
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const [tabularPayload, setTabularPayload] = useState<string>(
     JSON.stringify(income_salary_TabularInput, null, 2)
   );
 
-  // Handle model change and update text area payload accordingly
   const handleModelChange = (newModel: ModelType) => {
     setSelectedModel(newModel);
     if (newModel === 'income_salary') {
@@ -68,89 +31,35 @@ const AIPlayground = () => {
     }
   };
 
-  // FastAPI REST API Request Function
   const runFastAPIInference = async () => {
     setLoading(true);
     const startTime = performance.now();
 
-    // FastAPI Backend Endpoint
-    const baseUrl = process.env.NEXT_PUBLIC_FASTAPI_URL || '';
-    const endpointMap: Record<ModelType, string>
-      = {
-      brain_tumor: `${baseUrl}/predict/brain-tumor`,
-      income_salary: `${baseUrl}/predict/classification`,
-      house_price: `${baseUrl}/predict/regression`,
-    }
-    const fastapiEndpoint = endpointMap[selectedModel] || baseUrl;
-    let requestBody;
     try {
-      if (selectedModel === 'brain_tumor') {
-        requestBody = {
-          model_type: selectedModel,
-          input_tensor_shape: [1, 3, 224, 224]
-        };
-      } else {
-        const parsedInputs = JSON.parse(tabularPayload);
-
-        // Validation: Check if structure matches and no keys are added/deleted based on selected model
-        const activeOriginalTemplate = selectedModel === 'house_price' ? house_price_TabularInput : income_salary_TabularInput;
-        const originalKeys = Object.keys(activeOriginalTemplate.inputs[0]).sort();
-        const userKeys = parsedInputs?.inputs?.[0] ? Object.keys(parsedInputs.inputs[0]).sort() : [];
-
-        if (
-          parsedInputs.inputs.length !== 1 ||
-          originalKeys.length !== userKeys.length ||
-          !originalKeys.every((key, index) => key === userKeys[index])
-        ) {
-          throw new Error("Structure violation: You can only edit existing values. You cannot add or delete keys/fields.");
-        }
-
-        requestBody = {
-          model_type: selectedModel,
-          ...parsedInputs
-        };
-      }
-    } catch (err: any) {
-      setLoading(false);
-      setLatency(0);
-      setJsonResponse({
-        status: 'error',
-        message: err.message || 'Invalid JSON format or structure modification detected.',
-        timestamp: new Date().toISOString()
-      });
-      return;
-    }
-
-    try {
-      const apiResponse = await fetch(fastapiEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
+      const { data } = await runAIInferenceAPI({
+        selectedModel,
+        tabularPayload,
+        imageFile,
+        selectedImage,
+        housePriceTemplate: house_price_TabularInput,
+        incomeSalaryTemplate: income_salary_TabularInput,
       });
 
-      if (!apiResponse.ok) {
-        throw new Error(`HTTP error! Status: ${apiResponse.status}`);
-      }
-
-      const data = await apiResponse.json();
       const endTime = performance.now();
       const calculatedLatency = Math.round(endTime - startTime);
 
       setLatency(calculatedLatency);
       setJsonResponse({
         ...data,
-        timestamp: data.timestamp || new Date().toISOString(),
         latency_ms: calculatedLatency,
       });
-    } catch (error) {
+    } catch (err: any) {
       const endTime = performance.now();
       const calculatedLatency = Math.round(endTime - startTime);
       setLatency(calculatedLatency);
       setJsonResponse({
         status: 'error',
-        message: `Failed to connect to FastAPI backend at ${fastapiEndpoint}. Make sure your server is running.`,
+        message: err.message || 'Failed to connect to FastAPI backend. Make sure your server is running.',
         timestamp: new Date().toISOString()
       });
     } finally {
@@ -198,25 +107,48 @@ const AIPlayground = () => {
           <label className="block text-xs font-mono text-gray-300">
             {selectedModel === 'brain_tumor' ? 'Sample Image Payload:' : 'Editable JSON Payload (Values Only):'}
           </label>
-          <div className="p-4 rounded-lg bg-gray-950 border border-dashed border-gray-800 space-y-2 overflow-x-auto text-left">
-            {selectedModel === 'brain_tumor' ? (
-              <div className="text-center py-4">
-                <i className="fa-solid fa-file-image text-gray-600 text-2xl"></i>
-                <p className="text-xs text-gray-400 font-mono mt-2">
-                  Simulated Image Tensor:{' '}
-                  <span className="text-teal-400">[1, 3, 224, 224]</span>
-                </p>
+
+          {selectedModel === 'brain_tumor' ? (
+            <div className="p-4 rounded-lg bg-gray-950 border border-dashed border-gray-800 space-y-2 overflow-x-auto text-left">
+              <div className="text-center py-4 flex flex-col items-center">
+                {/* Image Preview Area */}
+                <div className="w-28 h-28 mb-3 rounded-lg border border-gray-800 bg-gray-900 flex items-center justify-center overflow-hidden">
+                  {selectedImage ? (
+                    <img src={selectedImage} alt="Sample Payload" className="w-full h-full object-cover" />
+                  ) : (
+                    <i className="fa-solid fa-file-image text-gray-600 text-3xl"></i>
+                  )}
+                </div>
+
+                {/* Upload Option */}
+                <label className="inline-flex items-center gap-2 text-xs font-mono text-teal-400 hover:text-teal-300 cursor-pointer transition-colors">
+                  <i className="fa-solid fa-cloud-arrow-up"></i>
+                  <span>Upload custom image</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setImageFile(file);
+                        const url = URL.createObjectURL(file);
+                        setSelectedImage(url);
+                      }
+                    }}
+                  />
+                </label>
               </div>
-            ) : (
-              <textarea
-                value={tabularPayload}
-                onChange={(e) => setTabularPayload(e.target.value)}
-                rows={20}
-                className="w-full bg-gray-950 text-teal-300 text-[11px] font-mono p-2 rounded border border-gray-800 focus:outline-none focus:border-teal-500 resize-y"
-                placeholder="Edit existing values only..."
-              />
-            )}
-          </div>
+            </div>
+          ) : (
+            <textarea
+              value={tabularPayload}
+              onChange={(e) => setTabularPayload(e.target.value)}
+              rows={20}
+              className="w-full bg-gray-950 text-teal-300 text-[11px] font-mono p-2 rounded border border-gray-800 focus:outline-none focus:border-teal-500 resize-y"
+              placeholder="Edit existing values only..."
+            />
+          )}
 
           <button
             onClick={runFastAPIInference}
@@ -238,12 +170,12 @@ const AIPlayground = () => {
         {/* Live JSON API Response Canvas */}
         <div className="lg:col-span-7 bg-gray-950 rounded-lg p-4 border border-gray-800 flex flex-col justify-between min-h-70">
           <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-3">
-            <span className="text-xs font-mono text-gray-400">
+            <span className="text-xs font-mono text-teal-300">
               Response Payload ({loading ? 'HTTP 102 Processing...' : 'HTTP 200 OK'})
             </span>
             <span
               id="latency-badge"
-              className="text-[10px] font-mono px-2 py-0.5 rounded bg-gray-900 text-gray-500"
+              className="text-[10px] font-mono px-2 py-0.5 rounded bg-gray-900 text-teal-300"
             >
               Latency: {latency !== null ? `${latency} ms` : '-- ms'}
             </span>

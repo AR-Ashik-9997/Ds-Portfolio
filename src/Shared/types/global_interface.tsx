@@ -74,3 +74,43 @@ export interface InferenceResponse {
     error?: string;
     message?: string;
 }
+
+export const income_salary_TabularInput = {
+  inputs: [
+    {
+      age: 30,
+      "capital-gain": 0,
+      "capital-loss": 0,
+      education: "Bachelors",
+      "education-num": 13,
+      fnlwgt: 200000,
+      "hours-per-week": 40,
+      "marital-status": "Never-married",
+      "native-country": "United-States",
+      occupation: "Exec-managerial",
+      race: "White",
+      relationship: "Not-in-family",
+      sex: "Male",
+      workclass: "Private"
+    }
+  ]
+};
+
+export const house_price_TabularInput = {
+  inputs: [
+    {
+      "Square_Footage": 2100,
+      "Num_Bedrooms": 3,
+      "Num_Bathrooms": 2.5,
+      "Stories": 2,
+      "Year_Built": 2015,
+      "Garage_Size": 2,
+      "Lot_Size": 6500,
+      "Property_Type": "Single-Family",
+      "Neighborhood_Quality": 8,
+      "Has_Pool": 1,
+      "Has_Fireplace": 1,
+      "Condition": "Excellent"
+    }
+  ]
+};
