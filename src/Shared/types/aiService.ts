@@ -22,7 +22,7 @@ export const runAIInferenceAPI = async ({
   incomeSalaryTemplate,
 }: InferenceParams) => {
   const baseUrl = process.env.NEXT_PUBLIC_FASTAPI_URL || '';
-  const brainTumorEndpoint = process.env.NEXT_PUBLIC_BTAIN_TUMOR_MODEL_URL || '';
+  const brainTumorEndpoint = process.env.NEXT_PUBLIC_BRAIN_TUMOR_MODEL_URL || '';
 
   const endpointMap: Record<ModelType, string> = {
     brain_tumor: `${brainTumorEndpoint}/predict/images`,
