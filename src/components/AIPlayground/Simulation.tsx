@@ -15,7 +15,7 @@ const AIPlayground = () => {
     status: 'ready',
     message: 'Select model and click Run FastAPI.'
   });
-  const [selectedImage, setSelectedImage] = useState<string>("https://via.placeholder.com/224");
+  const [selectedImage, setSelectedImage] = useState<string>("https://i.ibb.co.com/s9PZZqQk/Tr-aug-me-46.jpg");
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const [tabularPayload, setTabularPayload] = useState<string>(
@@ -153,7 +153,7 @@ const AIPlayground = () => {
           <button
             onClick={runFastAPIInference}
             disabled={loading}
-            className="w-full py-3 bg-teal-500 hover:bg-teal-400 text-gray-950 font-bold font-mono text-xs rounded-lg transition flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full py-3 bg-teal-500 hover:bg-teal-400 text-gray-950 font-bold font-mono text-xs rounded-lg transition flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
           >
             {loading ? (
               <>
