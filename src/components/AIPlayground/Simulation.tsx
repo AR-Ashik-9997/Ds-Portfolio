@@ -15,19 +15,19 @@ const AIPlayground = () => {
     status: 'ready',
     message: 'Select model and click Run FastAPI.'
   });
-  const [selectedImage, setSelectedImage] = useState<string>("https://i.ibb.co.com/s9PZZqQk/Tr-aug-me-46.jpg");
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [selectedImages, setSelectedImages] = useState<string[]>(["https://i.ibb.co.com/s9PZZqQk/Tr-aug-me-46.jpg"]);
+  const [imageFiles, setImageFiles] = useState<File[] | null>(null);
 
   const [tabularPayload, setTabularPayload] = useState<string>(
-    JSON.stringify(income_salary_TabularInput, null, 2)
+    JSON.stringify(income_salary_TabularInput, null, 4)
   );
 
   const handleModelChange = (newModel: ModelType) => {
     setSelectedModel(newModel);
     if (newModel === 'income_salary') {
-      setTabularPayload(JSON.stringify(income_salary_TabularInput, null, 2));
+      setTabularPayload(JSON.stringify(income_salary_TabularInput, null, 4));
     } else if (newModel === 'house_price') {
-      setTabularPayload(JSON.stringify(house_price_TabularInput, null, 2));
+      setTabularPayload(JSON.stringify(house_price_TabularInput, null, 4));
     }
   };
 
@@ -39,8 +39,8 @@ const AIPlayground = () => {
       const { data } = await runAIInferenceAPI({
         selectedModel,
         tabularPayload,
-        imageFile,
-        selectedImage,
+        imageFile: imageFiles,
+        selectedImage: selectedImages[0] || "",
         housePriceTemplate: house_price_TabularInput,
         incomeSalaryTemplate: income_salary_TabularInput,
       });
@@ -105,16 +105,20 @@ const AIPlayground = () => {
           </select>
 
           <label className="block text-xs font-mono text-gray-300">
-            {selectedModel === 'brain_tumor' ? 'Sample Image Payload:' : 'Editable JSON Payload (Values Only):'}
+            {selectedModel === 'brain_tumor' ? 'Sample Image Payload (Single or Multiple):' : 'Editable JSON Payload (Values Only):'}
           </label>
 
           {selectedModel === 'brain_tumor' ? (
             <div className="p-4 rounded-lg bg-gray-950 border border-dashed border-gray-800 space-y-2 overflow-x-auto text-left">
               <div className="text-center py-4 flex flex-col items-center">
-                {/* Image Preview Area */}
-                <div className="w-28 h-28 mb-3 rounded-lg border border-gray-800 bg-gray-900 flex items-center justify-center overflow-hidden">
-                  {selectedImage ? (
-                    <img src={selectedImage} alt="Sample Payload" className="w-full h-full object-cover" />
+                {/* Image Previews Container */}
+                <div className="w-full min-h-28 mb-3 rounded-lg bg-gray-950 p-3 flex flex-wrap items-center justify-center gap-3">
+                  {selectedImages.length > 0 ? (
+                    selectedImages.map((url, idx) => (
+                      <div key={idx} className="w-20 h-20 rounded-md border border-gray-700 overflow-hidden shrink-0 bg-gray-950 shadow-md">
+                        <img src={url} alt={`Payload ${idx + 1}`} className="w-full h-full object-cover" />
+                      </div>
+                    ))
                   ) : (
                     <i className="fa-solid fa-file-image text-gray-600 text-3xl"></i>
                   )}
@@ -123,17 +127,19 @@ const AIPlayground = () => {
                 {/* Upload Option */}
                 <label className="inline-flex items-center gap-2 text-xs font-mono text-teal-400 hover:text-teal-300 cursor-pointer transition-colors">
                   <i className="fa-solid fa-cloud-arrow-up"></i>
-                  <span>Upload custom image</span>
+                  <span>Upload custom image(s)</span>
                   <input
                     type="file"
                     accept="image/*"
+                    multiple
                     className="hidden"
                     onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setImageFile(file);
-                        const url = URL.createObjectURL(file);
-                        setSelectedImage(url);
+                      const files = e.target.files;
+                      if (files && files.length > 0) {
+                        const filesArray = Array.from(files);
+                        setImageFiles(filesArray);
+                        const urls = filesArray.map((file) => URL.createObjectURL(file));
+                        setSelectedImages(urls);
                       }
                     }}
                   />
@@ -167,7 +173,7 @@ const AIPlayground = () => {
           </button>
         </div>
 
-        {/* Live JSON API Response Canvas */}
+        {/* Live JSON API Response Canvas with clear gaps between items */}
         <div className="lg:col-span-7 bg-gray-950 rounded-lg p-4 border border-gray-800 flex flex-col justify-between min-h-70">
           <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-3">
             <span className="text-xs font-mono text-teal-300">
@@ -180,12 +186,40 @@ const AIPlayground = () => {
               Latency: {latency !== null ? `${latency} ms` : '-- ms'}
             </span>
           </div>
-          <pre
-            id="json-response"
-            className="text-xs font-mono text-teal-300 overflow-x-auto leading-relaxed flex-1"
-          >
-            {JSON.stringify(jsonResponse, null, 2)}
-          </pre>
+
+          <div className="overflow-x-auto flex-1 space-y-4">
+            {/* If response contains numeric index keys, render them with clear vertical gaps */}
+            {selectedModel === 'brain_tumor' && typeof jsonResponse === 'object' && jsonResponse !== null && !('status' in jsonResponse) ? (
+              <div className="space-y-4">
+                {Object.entries(jsonResponse).map(([key, value]) => {
+                  if (key === 'latency_ms') return null;
+                  return (
+                    <div key={key} className="p-3 bg-gray-950/60 border border-teal-800/80 rounded-lg space-y-1">
+                      <div className="text-[11px] font-mono text-teal-400 font-semibold mb-1">
+                        Image Index [{key}]:
+                      </div>
+                      <pre className="text-xs font-mono text-teal-300 leading-relaxed">
+                        {JSON.stringify(value, null, 4)}
+                      </pre>
+                    </div>
+                  );
+                })}
+                {/* Latency info at the bottom if present */}
+                {'latency_ms' in jsonResponse && (
+                  <div className="text-[11px] font-mono text-gray-400 pt-2 border-t border-gray-800/60">
+                    latency_ms: {(jsonResponse as any).latency_ms}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <pre
+                id="json-response"
+                className="text-xs font-mono text-teal-300 leading-relaxed"
+              >
+                {JSON.stringify(jsonResponse, null, 4)}
+              </pre>
+            )}
+          </div>
         </div>
       </div>
     </section>

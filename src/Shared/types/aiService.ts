@@ -3,11 +3,10 @@
 
 import { ModelType } from "./global_interface";
 
-
 interface InferenceParams {
   selectedModel: ModelType;
   tabularPayload: string;
-  imageFile: File | null;
+  imageFile: File | File[] | null; // Single or multiple files supported
   selectedImage: string;
   housePriceTemplate: any;
   incomeSalaryTemplate: any;
@@ -39,13 +38,17 @@ export const runAIInferenceAPI = async ({
     formData.append('model_type', selectedModel);
 
     if (imageFile) {
-      formData.append('file', imageFile);
+      // Handle both single File and File array
+      const filesArray = Array.isArray(imageFile) ? imageFile : [imageFile];
+      filesArray.forEach((file) => {
+        formData.append('files', file);
+      });
     } else {
       try {
         const response = await fetch(selectedImage);
         const blob = await response.blob();
         const defaultFile = new File([blob], "sample_brain_mri.jpg", { type: blob.type || "image/jpeg" });
-        formData.append('file', defaultFile);
+        formData.append('files', defaultFile);
       } catch (fetchErr) {
         console.error("Failed to load default sample image blob:", fetchErr);
       }
