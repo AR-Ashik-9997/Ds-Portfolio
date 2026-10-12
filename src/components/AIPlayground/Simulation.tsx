@@ -24,6 +24,13 @@ const AIPlayground = () => {
 
   const handleModelChange = (newModel: ModelType) => {
     setSelectedModel(newModel);
+    setLatency(null);
+    setJsonResponse({
+      status: 'ready',
+      message: 'Select model and click Run FastAPI.'
+    });
+    setImageFiles(null);
+    setSelectedImages(["https://i.ibb.co.com/s9PZZqQk/Tr-aug-me-46.jpg"])
     if (newModel === 'income_salary') {
       setTabularPayload(JSON.stringify(income_salary_TabularInput, null, 4));
     } else if (newModel === 'house_price') {
@@ -174,8 +181,8 @@ const AIPlayground = () => {
         </div>
 
         {/* Live JSON API Response Canvas with clear gaps between items */}
-        <div className="lg:col-span-7 bg-gray-950 rounded-lg p-4 border border-gray-800 flex flex-col justify-between min-h-70">
-          <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-3">
+        <div className="lg:col-span-7 bg-gray-950 rounded-lg p-4 border border-gray-800 flex flex-col justify-start min-h-70">
+          <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-3 shrink-0">
             <span className="text-xs font-mono text-teal-300">
               Response Payload ({loading ? 'HTTP 102 Processing...' : 'HTTP 200 OK'})
             </span>
@@ -187,7 +194,11 @@ const AIPlayground = () => {
             </span>
           </div>
 
-          <div className="overflow-x-auto flex-1 space-y-4">
+          {/* Added data-lenis-prevent attribute here */}
+          <div
+            data-lenis-prevent
+            className="overflow-x-auto overflow-y-auto flex-1 space-y-4 max-h-75 overscroll-contain pr-1"
+          >
             {/* If response contains numeric index keys, render them with clear vertical gaps */}
             {selectedModel === 'brain_tumor' && typeof jsonResponse === 'object' && jsonResponse !== null && !('status' in jsonResponse) ? (
               <div className="space-y-4">
@@ -198,7 +209,7 @@ const AIPlayground = () => {
                       <div className="text-[11px] font-mono text-teal-400 font-semibold mb-1">
                         Image Index [{key}]:
                       </div>
-                      <pre className="text-xs font-mono text-teal-300 leading-relaxed">
+                      <pre className="text-xs font-mono text-teal-300 leading-relaxed whitespace-pre-wrap">
                         {JSON.stringify(value, null, 4)}
                       </pre>
                     </div>
@@ -214,7 +225,7 @@ const AIPlayground = () => {
             ) : (
               <pre
                 id="json-response"
-                className="text-xs font-mono text-teal-300 leading-relaxed"
+                className="text-xs font-mono text-teal-300 leading-relaxed whitespace-pre-wrap"
               >
                 {JSON.stringify(jsonResponse, null, 4)}
               </pre>
