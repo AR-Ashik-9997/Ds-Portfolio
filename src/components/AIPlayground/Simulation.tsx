@@ -11,6 +11,7 @@ const AIPlayground = () => {
   const [selectedModel, setSelectedModel] = useState<ModelType>('brain_tumor');
   const [loading, setLoading] = useState<boolean>(false);
   const [latency, setLatency] = useState<number | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [jsonResponse, setJsonResponse] = useState<InferenceResponse | object>({
     status: 'ready',
     message: 'Select model and click Run FastAPI.'
@@ -65,9 +66,7 @@ const AIPlayground = () => {
       const calculatedLatency = Math.round(endTime - startTime);
       setLatency(calculatedLatency);
       setJsonResponse({
-        status: 'error',
         message: err.message || 'Failed to connect to FastAPI backend. Make sure your server is running.',
-        timestamp: new Date().toISOString()
       });
     } finally {
       setLoading(false);
@@ -131,26 +130,48 @@ const AIPlayground = () => {
                   )}
                 </div>
 
-                {/* Upload Option */}
-                <label className="inline-flex items-center gap-2 text-xs font-mono text-teal-400 hover:text-teal-300 cursor-pointer transition-colors">
-                  <i className="fa-solid fa-cloud-arrow-up"></i>
-                  <span>Upload custom image(s)</span>
+                <div className="flex flex-col items-center w-full my-3">
+                  <label
+                    htmlFor="file-upload"
+                    className="inline-flex items-center gap-2 text-xs font-mono text-teal-400 hover:text-teal-300 cursor-pointer transition-colors w-fit mx-auto"
+                  >
+                    <i className="fa-solid fa-cloud-arrow-up"></i>
+                    <span>Upload custom image(s)</span>
+                  </label>
                   <input
                     type="file"
                     accept="image/*"
                     multiple
                     className="hidden"
+                    id="file-upload"
                     onChange={(e) => {
                       const files = e.target.files;
                       if (files && files.length > 0) {
                         const filesArray = Array.from(files);
+
+                        const allAreImages = filesArray.every((file) => file.type.startsWith('image/'));
+
+                        if (!allAreImages) {
+                          setErrorMessage("⚠️ Please select valid image files only. Non-image files are not allowed.");
+                          setImageFiles([]);
+                          setSelectedImages([]);
+                          e.target.value = "";
+                          return;
+                        }
+
+                        setErrorMessage(null);
                         setImageFiles(filesArray);
                         const urls = filesArray.map((file) => URL.createObjectURL(file));
                         setSelectedImages(urls);
                       }
                     }}
                   />
-                </label>
+                  {errorMessage && (
+                    <p className="text-xs font-mono text-red-500 flex items-center gap-1 mt-2 text-center animate-pulse">
+                      {errorMessage}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           ) : (
@@ -165,7 +186,7 @@ const AIPlayground = () => {
 
           <button
             onClick={runFastAPIInference}
-            disabled={loading}
+            disabled={loading || Boolean(errorMessage)}
             className="w-full py-3 bg-teal-500 hover:bg-teal-400 text-gray-950 font-bold font-mono text-xs rounded-lg transition flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
           >
             {loading ? (

@@ -82,9 +82,24 @@ export const runAIInferenceAPI = async ({
   });
 
   if (!apiResponse.ok) {
-    throw new Error(`HTTP error! Status: ${apiResponse.status}`);
+    let errorMessage = `HTTP error! Status: ${apiResponse.status}`;
+
+    try {
+      const errorData = await apiResponse.json();
+      const backendDetail = errorData.detail || "";
+
+      if (selectedModel === 'brain_tumor' && backendDetail.includes("Invalid image")) {
+        errorMessage = "Please upload a valid Brain MRI scan image. Other types of images are not accepted.";
+      } else {
+        errorMessage = backendDetail || errorMessage;
+      }
+    } catch (parseErr) {
+      console.error("Failed to parse error response JSON:", parseErr);
+    }
+
+    throw new Error(errorMessage);
   }
 
   const data = await apiResponse.json();
-  return { data, endpoint: fastapiEndpoint };
-};
+  return { data, endpoint: fastapiEndpoint }
+}
