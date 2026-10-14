@@ -13,12 +13,12 @@ const PROJECTS_DATA: Project[] = [
     categoryLabel: 'Deep Learning',
     categoryBadgeStyle: 'bg-brand-500/20 border-brand-500/40 text-brand-300',
     image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
-    title: 'AI Image Synthesis Microservice',
-    description: 'High-throughput image generation API powered by PyTorch Stable Diffusion, FastAPI, Celery background tasks, and Redis queuing.',
-    techStack: ['PyTorch', 'FastAPI', 'Redis', 'Docker'],
+    title: 'AI Code Debugger',
+    description: 'AI Code Debugger is a Streamlit-based application that helps developers analyze uploaded code screenshots or images and receive AI-powered feedback. The app can identify issues in the image, provide debugging hints, or generate a more complete solution explanation.',
+    techStack: ['Streamlit', 'Google GenAI SDK', 'Pillow', 'Python 3.11'],
     actionLabel: 'Live Sandbox',
     actionIcon: 'ri-play-circle-line',
-    githubUrl: 'https://github.com'
+    githubUrl: 'https://github.com/AR-Ashik-9997/Ai-debugger'
   },
   {
     id: 'ecommerce',
@@ -26,12 +26,12 @@ const PROJECTS_DATA: Project[] = [
     categoryLabel: 'Full-Stack',
     categoryBadgeStyle: 'bg-indigo-500/20 border-indigo-500/40 text-indigo-300',
     image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop&q=80',
-    title: 'Next.js AI Product Search Platform',
+    title: 'Next.js AI & Full-Stack Engineer Portfolio',
     description: 'Scalable e-commerce platform integrated with vector embeddings (Pinecone) for smart contextual visual product recommendations.',
-    techStack: ['Next.js 14', 'TypeScript', 'Tailwind', 'Prisma'],
+    techStack: ['Next.js 16', 'TypeScript', 'Tailwind', 'Framer Motion'],
     actionLabel: 'View Case Study',
     actionIcon: 'ri-eye-line',
-    githubUrl: 'https://github.com'
+    githubUrl: 'https://github.com/AR-Ashik-9997/Ds-Portfolio'
   },
   {
     id: 'medical-ai',
@@ -41,10 +41,10 @@ const PROJECTS_DATA: Project[] = [
     image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&auto=format&fit=crop&q=80',
     title: 'MRI Medical Vision Classifier',
     description: 'PyTorch ResNet-50 transfer learning pipeline achieving 98.4% diagnostic accuracy for brain scan segmentation and diagnosis.',
-    techStack: ['PyTorch', 'OpenCV', 'TorchVision', 'CUDA'],
+    techStack: ['PyTorch', 'CNN', 'TorchVision', 'CUDA'],
     actionLabel: 'Metrics & Demo',
     actionIcon: 'ri-line-chart-line',
-    githubUrl: 'https://github.com'
+    githubUrl: 'https://github.com/AR-Ashik-9997/Brain-Tumor-MRI-Classification-with-CNN/tree/main'
   },
   {
     id: 'api-gateway',
@@ -54,10 +54,10 @@ const PROJECTS_DATA: Project[] = [
     image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&auto=format&fit=crop&q=80',
     title: 'Enterprise FastAPI Gateway',
     description: 'Asynchronous REST & WebSocket gateway handling 10k+ requests/sec with JWT authentication, rate limiting, and PostgreSQL connection pooling.',
-    techStack: ['FastAPI', 'PostgreSQL', 'SQLAlchemy', 'Alembic'],
+    techStack: ['FastAPI', 'scikit-learn / joblib', 'Uvicorn', 'Pydantic v2'],
     actionLabel: 'View Architecture',
     actionIcon: 'ri-article-line',
-    githubUrl: 'https://github.com'
+    githubUrl: 'https://github.com/AR-Ashik-9997/FastAPI-Platform'
   }
 ];
 
