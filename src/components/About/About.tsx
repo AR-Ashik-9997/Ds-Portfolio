@@ -33,7 +33,7 @@ const About = () => {
                         {/* Bio Subtitle */}
                         <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
                             I&apos;m <strong className="text-slate-200">Ashikur Rahman</strong>, a
-                            Machine Learning & Full-Stack Software Engineer with 4+ years of
+                            Machine Learning & Full-Stack Software Engineer with 2+ years of
                             experience constructing high-performance neural networks, PyTorch
                             model pipelines, microservices with FastAPI, and production
                             React/Next.js web architectures.
@@ -43,7 +43,7 @@ const About = () => {
                         <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-800/80 font-mono">
                             <div className="p-3 rounded-lg bg-gray-900/50 border border-gray-800/80">
                                 <span className="block text-xl font-bold text-teal-400">
-                                    4+ Years
+                                    2+ Years
                                 </span>
                                 <span className="text-[11px] text-gray-500">Engineering Dev</span>
                             </div>
@@ -107,7 +107,7 @@ const About = () => {
                                             Years Experience
                                         </span>
                                         <span className="text-2xl font-bold text-white font-mono">
-                                            04+
+                                            02+
                                         </span>
                                         <span className="text-[10px] text-brand-400 block mt-0.5">
                                             <i className="ri-sparkles-line" /> Full Stack AI
