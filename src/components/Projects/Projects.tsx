@@ -18,10 +18,11 @@ const PROJECTS_DATA: Project[] = [
     techStack: ['Streamlit', 'Google GenAI SDK', 'Pillow', 'Python 3.11'],
     actionLabel: 'Live Sandbox',
     actionIcon: 'ri-play-circle-line',
-    githubUrl: 'https://github.com/AR-Ashik-9997/Ai-debugger'
+    githubUrl: 'https://github.com/AR-Ashik-9997/Ai-debugger',
+    demo_link: "https://ai-debugger.vercel.app/"
   },
   {
-    id: 'ecommerce',
+    id: 'portfoilo',
     category: 'fullstack',
     categoryLabel: 'Full-Stack',
     categoryBadgeStyle: 'bg-indigo-500/20 border-indigo-500/40 text-indigo-300',
@@ -29,9 +30,10 @@ const PROJECTS_DATA: Project[] = [
     title: 'Next.js AI & Full-Stack Engineer Portfolio',
     description: 'Scalable e-commerce platform integrated with vector embeddings (Pinecone) for smart contextual visual product recommendations.',
     techStack: ['Next.js 16', 'TypeScript', 'Tailwind', 'Framer Motion'],
-    actionLabel: 'View Case Study',
+    actionLabel: 'Live Sandbox',
     actionIcon: 'ri-eye-line',
-    githubUrl: 'https://github.com/AR-Ashik-9997/Ds-Portfolio'
+    githubUrl: 'https://github.com/AR-Ashik-9997/Ds-Portfolio',
+    demo_link: "#"
   },
   {
     id: 'medical-ai',
@@ -44,10 +46,25 @@ const PROJECTS_DATA: Project[] = [
     techStack: ['PyTorch', 'CNN', 'TorchVision', 'CUDA'],
     actionLabel: 'Metrics & Demo',
     actionIcon: 'ri-line-chart-line',
-    githubUrl: 'https://github.com/AR-Ashik-9997/Brain-Tumor-MRI-Classification-with-CNN/tree/main'
+    githubUrl: 'https://github.com/AR-Ashik-9997/Brain-Tumor-MRI-Classification-with-CNN/tree/main',
+    demo_link: "#"
   },
   {
-    id: 'api-gateway',
+    id: 'sentiment',
+    category: 'ai',
+    categoryLabel: 'Deep Learning',
+    categoryBadgeStyle: 'bg-brand-500/20 border-brand-500/40 text-brand-300',
+    image: 'https://i.ibb.co.com/JWqLtWqK/premium-photo-1739123854194-90d8d1d024db.jpg',
+    title: 'Amazon Review of Sentiment Analysis',
+    description: 'Sentiment Pulse is a web dashboard for analyzing customer review sentiment. Enter a review or choose a sample preset, send it to a sentiment-analysis API, and inspect the returned classification, confidence, emotion, aspect impact, priority, and suggested response.',
+    techStack: ['PyTorch', 'NLP', 'TorchVision', 'LSTM'],
+    actionLabel: 'Live Demo',
+    actionIcon: 'ri-line-chart-line',
+    githubUrl: 'https://github.com/AR-Ashik-9997/Amazon-Reviews-for-Sentiment-Analysis',
+    demo_link: "https://sentiment-pulse-lemon.vercel.app/"
+  },
+  {
+    id: 'Sentiment',
     category: 'api',
     categoryLabel: 'Backend Architecture',
     categoryBadgeStyle: 'bg-amber-500/20 border-amber-500/40 text-amber-300',
@@ -57,16 +74,20 @@ const PROJECTS_DATA: Project[] = [
     techStack: ['FastAPI', 'scikit-learn / joblib', 'Uvicorn', 'Pydantic v2'],
     actionLabel: 'View Architecture',
     actionIcon: 'ri-article-line',
-    githubUrl: 'https://github.com/AR-Ashik-9997/FastAPI-Platform'
+    githubUrl: 'https://github.com/AR-Ashik-9997/FastAPI-Platform',
+    demo_link: "#"
   }
 ];
 
 const Projects = () => {
   const [activeFilter, setActiveFilter] = useState<FilterCategory>('all');
 
-  const openProjectModal = (id: string) => {
+  const openProjectModal = (id: string, link: string) => {
     // Custom modal opening logic or global modal state trigger can be attached here
     console.log('Open project modal:', id);
+    if (id && link) {
+      window.open(link, '_blank', 'noopener,noreferrer');
+    }
   };
 
   const filteredProjects = activeFilter === 'all'
@@ -161,36 +182,74 @@ const Projects = () => {
                 </span>
               </div>
               <div className="p-6 flex-1 flex flex-col justify-between">
-                <div>
-                  <h3
-                    className="text-xl font-bold text-white mb-2 hover:text-brand-400 transition-colors cursor-pointer"
-                    onClick={() => openProjectModal(project.id)}
-                  >
-                    {project.title}
-                  </h3>
-                  <p className="text-sm text-slate-400 mb-4 line-clamp-2">
-                    {project.description}
-                  </p>
-                  {/* Tech tags */}
-                  <div className="flex flex-wrap gap-1.5 mb-6">
-                    {project.techStack.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-2 py-0.5 rounded bg-slate-800 text-[11px] font-mono text-slate-300"
+                {
+                  project.demo_link != '#' ? (
+                    <div>
+                      <h3
+                        className="text-xl font-bold text-white mb-2 hover:text-brand-400 transition-colors cursor-pointer"
+                        onClick={() => openProjectModal(project.id, project.demo_link)}
                       >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                        {project.title}
+                      </h3>
+                      <p className="text-sm text-slate-400 mb-4 line-clamp-2">
+                        {project.description}
+                      </p>
+                      {/* Tech tags */}
+                      <div className="flex flex-wrap gap-1.5 mb-6">
+                        {project.techStack.map((tech) => (
+                          <span
+                            key={tech}
+                            className="px-2 py-0.5 rounded bg-slate-800 text-[11px] font-mono text-slate-300"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <h3
+                        className="text-xl font-bold text-white mb-2 hover:text-brand-400 transition-colors"
+
+                      >
+                        {project.title}
+                      </h3>
+                      <p className="text-sm text-slate-400 mb-4 line-clamp-2">
+                        {project.description}
+                      </p>
+                      {/* Tech tags */}
+                      <div className="flex flex-wrap gap-1.5 mb-6">
+                        {project.techStack.map((tech) => (
+                          <span
+                            key={tech}
+                            className="px-2 py-0.5 rounded bg-slate-800 text-[11px] font-mono text-slate-300"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                }
                 <div className="flex items-center gap-3 pt-4 border-t border-slate-800/80">
-                  <button
-                    onClick={() => openProjectModal(project.id)}
-                    className="flex-1 py-2 text-xs font-semibold rounded-lg bg-brand-600 hover:bg-brand-500 text-white transition-colors flex items-center justify-center gap-1.5"
-                  >
-                    <i className={`${project.actionIcon} text-base`} />{' '}
-                    {project.actionLabel}
-                  </button>
+                  {project.demo_link !== '#' ? (
+                    <button
+                      onClick={() => openProjectModal(project.id, project.demo_link)}
+                      className="flex-1 py-2 text-xs font-semibold rounded-lg bg-brand-600 hover:bg-brand-500 text-white transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <i className={`${project.actionIcon} text-base`} />{' '}
+                      {project.actionLabel}
+                    </button>
+                  ) : (
+                    <button
+                      disabled
+                      className="flex-1 py-2 text-xs font-semibold rounded-lg bg-brand-600 hover:bg-brand-500 text-white transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <i className={`${project.actionIcon} text-base`} />{' '}
+                      {project.actionLabel}
+                    </button>
+                  )}
+
                   <a
                     href={project.githubUrl}
                     target="_blank"

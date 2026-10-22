@@ -34,6 +34,7 @@ export interface Project {
     actionLabel: string;
     actionIcon: string;
     githubUrl: string;
+    demo_link:string
 }
 
 export interface SkillItem {
